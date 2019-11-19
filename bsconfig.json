@@ -1,0 +1,35 @@
+{
+  "name": "reason-react-examples",
+  "reason": {
+    "react-jsx": 3
+  },
+  "sources": {
+    "dir": "src",
+    "subdirs": true
+  },
+  "bsc-flags": [
+    "-bs-super-errors",
+    "-bs-no-version-header"
+  ],
+  "package-specs": [
+    {
+      "module": "commonjs",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "namespace": true,
+  "bs-dependencies": [
+    "@jsiebern/bs-material-ui",
+    "bs-abstract",
+    "reason-react",
+    "relude"
+  ],
+  "ppx-flags": [
+    "lenses-ppx/ppx"
+  ],
+  "warnings": {
+    "number": "+A-9-40-42"
+  },
+  "refmt": 3
+}

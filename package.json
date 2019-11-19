@@ -1,0 +1,33 @@
+{
+  "name": "record-table",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world",
+    "bundle": "parcel index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "BuckleScript",
+    "ReasonReact",
+    "reason-react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@jsiebern/bs-material-ui": "^1.1.0-hooks.14",
+    "@material-ui/core": "^4.6.1",
+    "bs-abstract": "^0.17.0",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "reason-react": ">=0.7.0",
+    "relude": "^0.37.0"
+  },
+  "devDependencies": {
+    "bs-platform": "^5.2.1",
+    "bsb-js": "^1.1.7",
+    "lenses-ppx": "^2.0.0",
+    "parcel-bundler": "^1.12.4"
+  }
+}
