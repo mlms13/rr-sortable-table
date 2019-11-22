@@ -35,21 +35,25 @@ let columns =
     makeOrdered(
       (module String.Ord),
       ~title="Name",
-      ~showLabel=v => v,
+      ~render=React.string,
       Person.Name,
     ),
     makeOrdered(
       (module Int.Ord),
       ~title="Age",
-      ~showLabel=Int.Show.show,
+      ~render=v => React.string(Int.Show.show(v)),
       Person.Age,
     ),
-    makeUnordered(
+    makeOrdered(
+      (module OptionF.Ord(JsDate.Ord)),
       ~title="Last Login",
-      ~showLabel=Option.maybe(~default="-", ~f=Js.Date.toDateString),
+      ~render=
+        v =>
+          Option.maybe(~default="-", ~f=Js.Date.toDateString, v)
+          |> React.string,
       Person.LastLogin,
     ),
   ];
 
 [@react.component]
-let make = () => <Table makeKey={v => v.Person.id} data=rows columns />;
+let make = () => <Table makeRowKey={v => v.Person.id} data=rows columns />;

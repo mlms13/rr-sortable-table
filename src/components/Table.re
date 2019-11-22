@@ -6,7 +6,7 @@ module Make = (Config: TableConfig.T) => {
   [@react.component]
   let make =
       (
-        ~makeKey: Config.data => string,
+        ~makeRowKey: Config.data => string,
         ~data: list(Config.data),
         ~columns: list(Column.t),
       ) => {
@@ -30,15 +30,15 @@ module Make = (Config: TableConfig.T) => {
     let headCells =
       List.map(
         fun
-        | Column.Column(title, {field, order: Some(order)}) =>
-          <TableCell key=title>
+        | Column.Column(title, Key(key), {field, order: Some(order)}) =>
+          <TableCell key>
             <TableSortLabel onClick={_ => sortBy(field, order)}>
               {React.string(title)}
             </TableSortLabel>
           </TableCell>
 
-        | Column.Column(title, {order: None}) =>
-          <TableCell key=title> {React.string(title)} </TableCell>,
+        | Column.Column(title, Key(key), {order: None}) =>
+          <TableCell key> {React.string(title)} </TableCell>,
         columns,
       )
       |> List.toArray
@@ -47,11 +47,11 @@ module Make = (Config: TableConfig.T) => {
     let bodyRows =
       List.map(
         row =>
-          <TableRow key={makeKey(row)}>
+          <TableRow key={makeRowKey(row)}>
             {List.map(
-               (Column.Column(_, {field, show})) =>
-                 <TableCell>
-                   {React.string(show(Config.get(row, field)))}
+               (Column.Column(_, Key(key), {field, render})) =>
+                 <TableCell key={makeRowKey(row) ++ key}>
+                   {render(Config.get(row, field))}
                  </TableCell>,
                columns,
              )
