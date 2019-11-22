@@ -45,7 +45,7 @@ let columns =
       Person.Age,
     ),
     makeOrdered(
-      (module OptionF.Ord(JsDate.Ord)),
+      (module Option.Ord(JsDate.Ord)),
       ~title="Last Login",
       ~render=
         v =>
