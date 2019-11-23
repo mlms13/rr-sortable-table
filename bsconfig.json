@@ -3,10 +3,17 @@
   "reason": {
     "react-jsx": 3
   },
-  "sources": {
-    "dir": "src",
-    "subdirs": true
-  },
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "examples",
+      "subdirs": true,
+      "type": "dev"
+    }
+  ],
   "bsc-flags": [
     "-bs-super-errors",
     "-bs-no-version-header"

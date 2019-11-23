@@ -1,7 +1,49 @@
+open BsAbstract.Interface;
 open Relude.Globals;
 
-module Make = (Config: TableConfig.T) => {
-  module Column = Column.Make(Config);
+module type Config = {
+  type field('a);
+  type data;
+  let get: (data, field('a)) => 'a;
+};
+
+module Make = (Config: Config) => {
+  module Column = {
+    type key =
+      | Key(string);
+
+    type data('a) = {
+      field: Config.field('a),
+      render: 'a => React.element,
+      order: option(('a, 'a) => ordering),
+    };
+
+    type t =
+      | Column(string, key, data('a)): t;
+
+    let makeUnordered =
+        (
+          type a,
+          ~title: string,
+          ~key=title,
+          ~render: a => React.element,
+          field: Config.field(a),
+        ) =>
+      Column(title, Key(key), {field, render, order: None});
+
+    let makeOrdered =
+        (
+          type a,
+          order: (module ORD with type t = a),
+          ~title: string,
+          ~key=title,
+          ~render: a => React.element,
+          field: Config.field(a),
+        ) => {
+      module Order = (val order);
+      Column(title, Key(key), {field, render, order: Some(Order.compare)});
+    };
+  };
 
   type state =
     | Unsorted
@@ -11,7 +53,7 @@ module Make = (Config: TableConfig.T) => {
   let make =
       (
         ~makeRowKey: Config.data => string,
-        ~data: list(Config.data),
+        ~rows: list(Config.data),
         ~columns: list(Column.t),
       ) => {
     module Table = MaterialUi_Table;
@@ -44,7 +86,7 @@ module Make = (Config: TableConfig.T) => {
             // if the selected column isn't currently sorted, sort it (asc)
             | Sorted(_, `Asc, _)
             | Sorted(_, `Desc, Key(_))
-            | Unsorted => Sorted(sortRows(field, order, data), `Asc, Key(k))
+            | Unsorted => Sorted(sortRows(field, order, rows), `Asc, Key(k))
             }
 
           // if we're told to set the sort, but the column doesn't provide
@@ -55,7 +97,7 @@ module Make = (Config: TableConfig.T) => {
 
     let rows =
       switch (state) {
-      | Unsorted => data
+      | Unsorted => rows
       | Sorted(rows, _, _) => rows
       };
 
