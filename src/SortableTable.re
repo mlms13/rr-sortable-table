@@ -86,9 +86,18 @@ let make =
 
         // if we're told to set the sort, but the column doesn't provide
         // ordering, just ignore it (business logic should prevent this)
-        | `SetSort(Column.Column(_, _, {order: None})) => state,
+        | `SetSort(Column.Column(_, _, {order: None})) => state
+
+        // if we're told to refresh, draw the same sort with the current rows
+        // we could improve this by storing the current sort function in state
+        // and re-sorting by the current sort
+        | `Refresh => Unsorted,
       Unsorted,
     );
+
+  // since we're storing the rows in our local state, if the prop changes, we
+  // need to refresh the table manually
+  React.useEffect1(() => dispatch(`Refresh) |> const(None), [|rows|]);
 
   let rows =
     switch (state) {

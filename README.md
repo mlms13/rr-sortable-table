@@ -65,7 +65,7 @@ let columns = [
 let make = () => <SortableTable makeRowKey={user => user.id} rows columns />;
 ```
 
-The above example assumes you're using the [Relude](https://github.com/reazen/relude) + [bs-abstract](https://github.com/reazen/relude) libraries. The implementation of `SortableTable` in this project asks orderable columns be constructed with an `Ord` module for the corresponding data type. bs-abstract provides these `Ord` modules for many common types.
+The above example assumes you're using the [Relude](https://github.com/reazen/relude) + [bs-abstract](https://github.com/Risto-Stevcev/bs-abstract) libraries. The implementation of `SortableTable` in this project asks orderable columns be constructed with an `Ord` module for the corresponding data type. bs-abstract provides these `Ord` modules for many common types.
 
 But if Relude and bs-abstract aren't your cup of tea, that's fine -- the implementation could absolutely use a "normal" `('a, 'a) => int` function for ordering instead, as is common in the OCaml world. Feel free to hack up this idea until it works for your needs.
 
@@ -73,6 +73,5 @@ Earlier versions relied on [lenses-ppx](https://github.com/Astrocoders/lenses-pp
 
 ## Limitations
 
-- The table maintains its own state (to track the current sort). It caches the currently-sorted rows, which means that if you pass in updated row data, it won't be immediately picked up. We could work around this pretty easily with a `useEffect` hook that watches the rows.
-
+- Internally, we track the currently-sorted column by its `string` key. This is a bit sad, but since React already complains if you don't provide a unique key, this is a much easier option than requiring the outside world to provide a "column eq" function.
 - Material UI may not be for everyone. This approach could be modified to work with basically any table rendering. I happened to pick Material UI because it's easy enough and I didn't want to write CSS.
