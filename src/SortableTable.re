@@ -13,34 +13,38 @@ module Column = {
 
   type t('row) =
     | Column(string, key, data('row, 'field)): t('row);
-
-  let makeUnordered =
-      (
-        type a,
-        ~title: string,
-        ~key=title,
-        ~render: a => React.element,
-        field: 'row => a,
-      ) =>
-    Column(title, Key(key), {field, render, order: None});
-
-  let makeOrdered =
-      (
-        type a,
-        order: (module ORD with type t = a),
-        ~title: string,
-        ~key=title,
-        ~render: a => React.element,
-        field: 'row => a,
-      ) => {
-    module Order = (val order);
-    Column(title, Key(key), {field, render, order: Some(Order.compare)});
-  };
 };
 
 type state('a) =
   | Unsorted
   | Sorted(list('a), [ | `Asc | `Desc], Column.key);
+
+let unorderedColumn =
+    (
+      type a,
+      ~title: string,
+      ~key=title,
+      ~render: a => React.element,
+      field: 'row => a,
+    ) =>
+  Column.Column(title, Key(key), {field, render, order: None});
+
+let orderedColumn =
+    (
+      type a,
+      order: (module ORD with type t = a),
+      ~title: string,
+      ~key=title,
+      ~render: a => React.element,
+      field: 'row => a,
+    ) => {
+  module Order = (val order);
+  Column.Column(
+    title,
+    Key(key),
+    {field, render, order: Some(Order.compare)},
+  );
+};
 
 [@react.component]
 let make =
